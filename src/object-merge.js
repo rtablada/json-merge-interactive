@@ -23,13 +23,19 @@ export default class ObjectMerge {
           const original = this.original[key];
           const replace = this.replace[key];
           const keyWithPrefix = this.getKey(key);
-          const mergeDetail = { key: keyWithPrefix, original, replace };
 
           if (typeof original === 'object' && typeof replace === 'object') {
             const merge = new ObjectMerge(original, replace, keyWithPrefix);
             result = set(result, key, merge.run(cb));
-          } else if (!this.original.hasOwnProperty(key) || cb(mergeDetail)) {
+          } else if (!this.original.hasOwnProperty(key)) {
             result = set(result, key, this.replace[key]);
+          } else {
+            const mergeDetail = { key: keyWithPrefix, original, replace };
+            const shouldReplace = yield cb(mergeDetail);
+
+            if (shouldReplace) {
+              result = set(result, key, this.replace[key]);
+            }
           }
         }
       }

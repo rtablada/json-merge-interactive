@@ -26,6 +26,23 @@ describe('Object Merge', function() {
     });
   });
 
+  it('should wait for async to resolve all new values', function() {
+    var orig = {a: 1, b: 2};
+    var replace = {a: 'abc'};
+    var merge = new ObjectMerge(orig, replace);
+    var pro = merge.run(function(merge) {
+      return new Promise(function(resolve) {
+        setTimeout(function() {
+          resolve(true);
+        }, 10);
+      });
+    });
+
+    pro.then(function (result) {
+      expect(result).to.deep.equal({a: 'abc', b: 2});
+    });
+  });
+
   it('should accept reject new values', function() {
     var orig = {a: 1, b: 2};
     var replace = {a: 'abc'};
