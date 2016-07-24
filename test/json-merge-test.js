@@ -7,21 +7,23 @@ describe('JSON Merge', function() {
     var replace = '{"a": "abc"}';
 
     var merge = new JsonMerge(orig, replace);
-    var result = merge.run(function(merge) {
+    var pro = merge.run(function(merge) {
       return true;
     });
-
-    expect(result).to.deep.equal({a: 'abc', b: 2});
+    pro.then(function (result) {
+      expect(result).to.deep.equal({a: 'abc', b: 2});
+    });
   });
 
   it('should accept reject new values', function() {
     var orig = '{"a": 1, "b": 2}';
     var replace = '{"a": "abc"}';
     var merge = new JsonMerge(orig, replace);
-    var result = merge.run(function(merge) {
+    var pro = merge.run(function(merge) {
       return false;
     });
-
-    expect(result).to.deep.equal({a: 1, b: 2});
+    pro.then(function (result) {
+      expect(result).to.deep.equal({a: 1, b: 2});
+    });
   });
 });
