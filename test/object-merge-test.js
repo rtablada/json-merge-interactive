@@ -13,20 +13,21 @@ describe('Object Merge', function() {
     expect(result.run).to.be.a('function');
   });
 
-  it('should accept all new values', function() {
+  it('should accept all new values', function(done) {
     var orig = {a: 1, b: 2};
     var replace = {a: 'abc'};
     var merge = new ObjectMerge(orig, replace);
     var pro = merge.run(function(merge) {
-      return true;
+      return Promise.resolve(true);
     });
 
     pro.then(function (result) {
       expect(result).to.deep.equal({a: 'abc', b: 2});
+      done();
     });
   });
 
-  it('should wait for async to resolve all new values', function() {
+  it('should wait for async to resolve all new values', function(done) {
     var orig = {a: 1, b: 2};
     var replace = {a: 'abc'};
     var merge = new ObjectMerge(orig, replace);
@@ -40,32 +41,35 @@ describe('Object Merge', function() {
 
     pro.then(function (result) {
       expect(result).to.deep.equal({a: 'abc', b: 2});
+      done();
     });
   });
 
-  it('should accept reject new values', function() {
+  it('should accept reject new values', function(done) {
     var orig = {a: 1, b: 2};
     var replace = {a: 'abc'};
     var merge = new ObjectMerge(orig, replace);
     var pro = merge.run(function(merge) {
-      return false;
+      return Promise.resolve(false);
     });
 
     pro.then(function (result) {
       expect(result).to.deep.equal({a: 1, b: 2});
+      done();
     });
   });
 
-  it('should bring in new values from replace', function() {
+  it('should bring in new values from replace', function(done) {
     var orig = {a: 1, b: 2};
     var replace = {a: 'abc', c: 'xyz'};
     var merge = new ObjectMerge(orig, replace);
     var pro = merge.run(function(merge) {
-      return false;
+      return Promise.resolve(false);
     });
 
     pro.then(function (result) {
       expect(result).to.deep.equal({a: 1, b: 2, c: 'xyz'});
+      done();
     });
   });
 
@@ -87,43 +91,48 @@ describe('Object Merge', function() {
     expect(result).to.equal('foo');
   });
 
-  it('should continue merging nested objects', function() {
+  it('should continue merging nested objects', function(done) {
     var orig = { a: { x: 1, y: 'a' }, b: 2, d: '10' };
     var replace = { a: { x: 'z', y: '2' }, b: 2, c: 'c' };
     var merge = new ObjectMerge(orig, replace);
     var pro = merge.run(function(merge) {
-      return true;
+      return Promise.resolve(true);
     });
 
     pro.then(function (result) {
       expect(result).to.deep
         .equal({ a: { x: 'z', y: '2' }, b: 2, c: 'c', d: '10' });
+      done();
     });
   });
 
-  it('should continue merging nested objects with false', function() {
+  it('should continue merging nested objects with false', function(done) {
     var orig = { a: { x: 1, y: 'a' }, b: 2, d: '10' };
     var replace = { a: { x: 'z', y: '2' }, b: 2, c: 'c' };
     var merge = new ObjectMerge(orig, replace);
     var pro = merge.run(function(merge) {
-      return false;
+      return Promise.resolve(false);
     });
 
     pro.then(function (result) {
       expect(result).to.deep.equal({ a: { x: 1, y: 'a' }, b: 2, c: 'c', d: '10' });
+      done();
     });
   });
 
-  it('should continue merging nested objects with mixed results', function() {
+  it('should continue merging nested objects with mixed results', function(done) {
     var orig = { a: { x: 1, y: 'a' }, b: 15, d: '10' };
     var replace = { a: { x: 'z', y: '2' }, b: 2, c: 'c' };
     var merge = new ObjectMerge(orig, replace);
     var pro = merge.run(function(merge) {
-      return merge.key.indexOf('.') > -1;
+      var decision = merge.key.indexOf('.') > -1;
+
+      return Promise.resolve(decision);
     });
 
     pro.then(function (result) {
       expect(result).to.deep.equal({ a: { x: 'z', y: '2' }, b: 15, c: 'c', d: '10' });
+      done();
     });
   });
 });
