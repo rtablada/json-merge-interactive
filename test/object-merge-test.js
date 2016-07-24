@@ -45,4 +45,22 @@ describe('Object Merge', function() {
 
     expect(result).to.deep.equal({a: 1, b: 2, c: 'xyz'});
   });
+
+  it('should get nested keys', function() {
+    var orig = {a: 1, b: 2};
+    var replace = {a: 'abc', c: 'xyz'};
+    var merge = new ObjectMerge(orig, replace, 'a');
+    var result = merge.getKey('foo');
+
+    expect(result).to.equal('a.foo');
+  });
+
+  it('should account for no prefix for keys', function() {
+    var orig = {a: 1, b: 2};
+    var replace = {a: 'abc', c: 'xyz'};
+    var merge = new ObjectMerge(orig, replace);
+    var result = merge.getKey('foo');
+
+    expect(result).to.equal('foo');
+  });
 });

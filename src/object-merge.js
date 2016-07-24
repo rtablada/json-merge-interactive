@@ -6,9 +6,10 @@ function set(obj, key, value) {
 }
 
 export default class ObjectMerge {
-  constructor(original, replace) {
+  constructor(original, replace, prefix) {
     this.original = original;
     this.replace = replace;
+    this.prefix = prefix;
   }
 
   run(cb) {
@@ -29,5 +30,13 @@ export default class ObjectMerge {
     }
 
     return result;
+  }
+
+  getKey(key) {
+    if (this.prefix) {
+      return `${this.prefix}.${key}`;
+    }
+
+    return key;
   }
 }
