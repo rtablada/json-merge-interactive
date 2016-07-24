@@ -23,4 +23,26 @@ describe('Object Merge', function() {
 
     expect(result).to.deep.equal({a: 'abc', b: 2});
   });
+
+  it('should accept reject new values', function() {
+    var orig = {a: 1, b: 2};
+    var replace = {a: 'abc'};
+    var merge = new ObjectMerge(orig, replace);
+    var result = merge.run(function(merge) {
+      return false;
+    });
+
+    expect(result).to.deep.equal({a: 1, b: 2});
+  });
+
+  it('should bring in new values from replace', function() {
+    var orig = {a: 1, b: 2};
+    var replace = {a: 'abc', c: 'xyz'};
+    var merge = new ObjectMerge(orig, replace);
+    var result = merge.run(function(merge) {
+      return false;
+    });
+
+    expect(result).to.deep.equal({a: 1, b: 2, c: 'xyz'});
+  });
 });
