@@ -29,3 +29,47 @@ merge.run(function (m) {
   console.log(result);
 });
 ```
+
+This will log out:
+
+```js
+{ firstName: 'Marge', lastName: 'Simpson', age: 23, hair: 'blue' }
+```
+
+
+## Example Using Inquirer
+
+Since the conflict resolution function returns a promise, it is easy to wait for user feedback.
+In this example, we'll use the `inquirer` package to ask the user which option they want to choose:
+
+```js
+var inquirer = require('inquirer');
+var ObjectMerge = require('json-merge-interactive').ObjectMerge;
+
+var original = { firstName: 'Homer', lastName: 'Simpson', age: 23 };
+var replace = { firstName: 'Marge', lastName: 'Bouvier', hair: 'blue' };
+
+var merge = new ObjectMerge(original, replace);
+merge.run(function (m) {
+  const message = `Are you sure you want to replace "${m.originalValue}" with "${m.replaceValue}"?`;
+  const prompt = { type: 'confirm', name: 'answer', message };
+  return inquirer.prompt(prompt)
+    .then((results) => results.answer);
+}).then((result) => {
+  console.log(result);
+});
+
+```
+
+This will come up with a prompt asking:
+
+```bash
+? Are you sure you want to replace "Homer" with "Marge"? (Y/n)
+? Are you sure you want to replace "Simpson" with "Bouvier"? (Y/n)
+```
+
+Then based on the answers, the interactive merge will pull in the appropriate properties from the replace object.
+
+## License
+
+This package is open-sourced software licensed under the [MIT License](LICENSE.txt).
