@@ -12,4 +12,15 @@ describe('Object Merge', function() {
     expect(result.replace).to.equal(replace);
     expect(result.run).to.be.a('function');
   });
+
+  it('should accept all new values', function() {
+    var orig = {a: 1, b: 2};
+    var replace = {a: 'abc'};
+    var merge = new ObjectMerge(orig, replace);
+    var result = merge.run(function(merge) {
+      return true;
+    });
+
+    expect(result).to.deep.equal({a: 'abc', b: 2});
+  });
 });
