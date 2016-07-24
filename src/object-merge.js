@@ -17,13 +17,15 @@ export default class ObjectMerge {
 
     for (var key in this.replace) {
       if (this.replace.hasOwnProperty(key)) {
-        const mergeDetail = {
-          key,
-          original: this.original[key],
-          replace: this.original[key]
-        };
+        const original = this.original[key];
+        const replace = this.replace[key];
+        const keyWithPrefix = this.getKey(key);
+        const mergeDetail = { key: keyWithPrefix, original, replace };
 
-        if (!this.original.hasOwnProperty(key) || cb(mergeDetail)) {
+        if (typeof original === 'object' && typeof replace === 'object') {
+          const merge = new ObjectMerge(original, replace, keyWithPrefix);
+          result = set(result, key, merge.run(cb));
+        } else if (!this.original.hasOwnProperty(key) || cb(mergeDetail)) {
           result = set(result, key, this.replace[key]);
         }
       }
