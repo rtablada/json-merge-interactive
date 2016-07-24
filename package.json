@@ -1,12 +1,12 @@
 {
   "name": "json-merge-interactive",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "An interactive json merge tool",
   "main": "dist/index.js",
   "scripts": {
     "dev": "babel --watch -d dist src",
     "build": "babel -d dist src",
-    "prepublish": "npm run compile",
+    "prepublish": "npm run build",
     "test": "mocha"
   },
   "keywords": [
